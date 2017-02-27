@@ -2,13 +2,13 @@
 VISA: RSA Digital Demod
 Author: Morgan Allison
 Date created: 1/17
-Date edited: 1/17
+Date edited: 2/17
 This program sets up RSA5k/SignalVu-PC/SignalVu remotely to
 acquire and demodulate a 1 MHz QPSK signal with RRC filter 
 and alpha of 0.3.
 Windows 7 64-bit
-Python 3.5.2 64-bit (Anaconda 4.2.0)
-NumPy 1.11.2, MatPlotLib 1.5.3
+Python 3.6.0 64-bit (Anaconda 4.3.0)
+NumPy 1.11.2, MatPlotLib 2.0.0
 Download Anaconda: http://continuum.io/downloads
 Download SignalVu-PC programmer manual: http://www.tek.com/node/1828803
 Download RSA5100B programmer manual: 
@@ -17,11 +17,12 @@ Tested on RSA306B, RSA5126B and MSO73304DX with SignalVu
 """
 
 import visa
+import numpy as np
 import matplotlib.pyplot as plt
 
 """#################SEARCH/CONNECT#################"""
 rm = visa.ResourceManager()
-inst = rm.open_resource('TCPIP::<scope IP address here>::INSTR')	
+inst = rm.open_resource('TCPIP::127.0.0.1::INSTR')	
 inst.timeout = 25000
 instId = inst.ask('*idn?')
 print(instId)
@@ -59,13 +60,14 @@ inst.write('trigger:status off')
 inst.write('initiate:continuous off')
 
 # configure digital demodulation (QPSK, 1 MSym/s, RRC/RC filters, alpha 0.3)
-symRate = 1.2e6
+symRate = 1e6
+alpha = 0.3
 
 inst.write('sense:ddemod:modulation:type qpsk')
 inst.write('sense:ddemod:srate {}'.format(symRate))
 inst.write('sense:ddemod:filter:measurement rrcosine')
 inst.write('sense:ddemod:filter:reference rcosine')
-inst.write('sense:ddemod:filter:alpha 0.3')
+inst.write('sense:ddemod:filter:alpha {}'.format(alpha))
 
 # start acquisition
 inst.write('initiate:immediate')
@@ -85,9 +87,28 @@ evm = [float(value) for value in results]
 print('EVM (RMS): {0[0]:2.3f}%, EVM (peak): {0[1]:2.3f}%, Symbol: {0[2]:<4.0f}'
 	.format(evm))
 
+# get EVM vs time data
 evmVsTime = inst.query_binary_values('fetch:evm:trace?')
 
-plt.plot(evmVsTime)
+# determine points per symbol to create a plottable x axis
+ptsPerSymbol = inst.ask('sense:ddemod:symbol:points?')
+if ptsPerSymbol == 'ONE\n':
+    ptsPerSymbol = 1.0
+elif ptsPerSymbol == 'TWO\n':
+    ptsPerSymbol = 2.0
+elif ptsPerSymbol == 'FOUR\n':
+    ptsPerSymbol = 4.0
+elif ptsPerSymbol == 'EIGHT\n':
+    ptsPerSymbol = 8.0
+else:
+    ptsPerSymbol = 4.0    # default
+
+symbol = np.array(range(len(evmVsTime)))/ptsPerSymbol
+
+plt.plot(symbol, evmVsTime)
+plt.title('EVM vs Symbol #')
+plt.xlabel('Symbol')
+plt.ylabel('EVM (%)')
 plt.show()
 
 inst.close()
