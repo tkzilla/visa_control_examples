@@ -2,13 +2,12 @@
 VISA: Peak Detector
 Author: Morgan Allison
 Date created: Unknown
-Date edited: 1/17
+Date edited: 2/17
 This program tracks the peak frequency 10 times, writes the results
 to a csv file, and creates a scatter plot of the results.
 Windows 7 64-bit
-RSA API version 3.9.0029
-Python 3.5.2 64-bit (Anaconda 4.2.0)
-NumPy 1.11.2, MatPlotLib 1.5.3
+Python 3.6.6 64-bit (Anaconda 4.3.0)
+NumPy 1.11.2, MatPlotLib 2.0.0
 Download Anaconda: http://continuum.io/downloads
 Anaconda includes MatPlotLib
 """
