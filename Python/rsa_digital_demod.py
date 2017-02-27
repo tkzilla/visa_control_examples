@@ -17,10 +17,11 @@ Tested on RSA306B, RSA5126B and MSO73304DX with SignalVu
 """
 
 import visa
+import matplotlib.pyplot as plt
 
 """#################SEARCH/CONNECT#################"""
 rm = visa.ResourceManager()
-inst = rm.open_resource('TCPIP::192.168.1.2::INSTR')
+inst = rm.open_resource('TCPIP::<scope IP address here>::INSTR')	
 inst.timeout = 25000
 instId = inst.ask('*idn?')
 print(instId)
@@ -51,14 +52,17 @@ inst.write('input:rlevel {}'.format(refLevel))
 # open new displays
 inst.write('display:ddemod:measview:new conste') # constellation
 inst.write('display:ddemod:measview:new stable') # symbol table
+inst.write('display:ddemod:measview:new evm') # EVM vs Time
 
 # turn off trigger and disable continuous capture (enable single shot mode)
 inst.write('trigger:status off')
 inst.write('initiate:continuous off')
 
 # configure digital demodulation (QPSK, 1 MSym/s, RRC/RC filters, alpha 0.3)
+symRate = 1.2e6
+
 inst.write('sense:ddemod:modulation:type qpsk')
-inst.write('sense:ddemod:srate 1e6')
+inst.write('sense:ddemod:srate {}'.format(symRate))
 inst.write('sense:ddemod:filter:measurement rrcosine')
 inst.write('sense:ddemod:filter:reference rcosine')
 inst.write('sense:ddemod:filter:alpha 0.3')
@@ -80,5 +84,10 @@ evm = [float(value) for value in results]
 # see Python's format spec docs for more details: https://goo.gl/YmjGzV
 print('EVM (RMS): {0[0]:2.3f}%, EVM (peak): {0[1]:2.3f}%, Symbol: {0[2]:<4.0f}'
 	.format(evm))
+
+evmVsTime = inst.query_binary_values('fetch:evm:trace?')
+
+plt.plot(evmVsTime)
+plt.show()
 
 inst.close()

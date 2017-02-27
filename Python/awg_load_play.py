@@ -24,15 +24,6 @@ awg.write('*rst')
 awg.write('*cls')
 
 
-
-"""#################INITIALIZE VARIABLES#################"""
-# configure acquisition parameters
-freq = 2e9
-span = 40e6
-rbw = 100
-refLevel = -50
-
-
 """#################CONFIGURE INSTRUMENT#################"""
 # to load a .awgx file, you need to use mmemory:open:setup and ensure that
 # the path to the setup file is contained in double quotes
@@ -42,8 +33,8 @@ awg.ask('*opc?')
 
 # to load a .wfmx file, you need to use mmemory:open and ensure that
 # the path to the waveform file is contained in double quotes
-wfmfile = '"C:\\Users\\mallison\\Desktop\\Tek\\!SAPL\\!AWG\\Waveform Files\\vec_dl_short_I.wfmx"'
-awg.write('mmemory:open ', wfmfile)
+wfmFile = '"C:\\Users\\mallison\\Desktop\\Tek\\!SAPL\\!AWG\\Waveform Files\\vec_dl_short_I.wfmx"'
+awg.write('mmemory:open ', wfmFile)
 awg.ask('*opc?')
 
 # to assign a waveform from the waveform list to a channel, use 
