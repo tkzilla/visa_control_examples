@@ -6,10 +6,12 @@ Date edited: 2/17
 This program sets up RSA5k/SignalVu-PC/SignalVu remotely to
 acquire and demodulate a 1 MHz QPSK signal with RRC filter 
 and alpha of 0.3.
-Windows 7 64-bit
+Windows 7 64-bit, TekVISA 4.0.4
 Python 3.6.0 64-bit (Anaconda 4.3.0)
-NumPy 1.11.2, MatPlotLib 2.0.0
+NumPy 1.11.2, MatPlotLib 2.0.0, PyVISA 1.8
+To get PyVISA: pip install pyvisa
 Download Anaconda: http://continuum.io/downloads
+Anaconda includes NumPy and MatPlotLib
 Download SignalVu-PC programmer manual: http://www.tek.com/node/1828803
 Download RSA5100B programmer manual: 
 http://www.tek.com/spectrum-analyzer/inst5000-manual-7

@@ -5,11 +5,16 @@ Date created: Unknown
 Date edited: 2/17
 This program tracks the peak frequency 10 times, writes the results
 to a csv file, and creates a scatter plot of the results.
-Windows 7 64-bit
-Python 3.6.6 64-bit (Anaconda 4.3.0)
-NumPy 1.11.2, MatPlotLib 2.0.0
+Windows 7 64-bit, TekVISA 4.0.4
+Python 3.6.0 64-bit (Anaconda 4.3.0)
+MatPlotLib 2.0.0, PyVISA 1.8
+To get PyVISA: pip install pyvisa
 Download Anaconda: http://continuum.io/downloads
 Anaconda includes MatPlotLib
+Download SignalVu-PC programmer manual: http://www.tek.com/node/1828803
+Download RSA5100B programmer manual: 
+http://www.tek.com/spectrum-analyzer/inst5000-manual-7
+Tested on RSA306B, RSA507A, RSA5126B
 """
 
 import visa

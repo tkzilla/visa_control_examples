@@ -6,10 +6,15 @@ Date Edited: 1/17
 This program transfers the Amplitude vs Time trace from the RSA to the 
 computer and plots the results. 
 Windows 7 64-bit, TekVISA 4.0.4
-Python 3.5.2 64-bit (Anaconda 4.2.0)
-NumPy 1.11.2, MatPlotLib 1.5.3, PyVISA 1.5
-To get Anaconda: http://continuum.io/downloads
-Tested on RSA306B and RSA5126B
+Python 3.6.0 64-bit (Anaconda 4.3.0)
+MatPlotLib 2.0.0, PyVISA 1.8
+To get PyVISA: pip install pyvisa
+Download Anaconda: http://continuum.io/downloads
+Anaconda includes MatPlotLib
+Download SignalVu-PC programmer manual: http://www.tek.com/node/1828803
+Download RSA5100B programmer manual: 
+http://www.tek.com/spectrum-analyzer/inst5000-manual-7
+Tested on RSA306B, RSA507A, and RSA5126B
 """
 
 import visa
