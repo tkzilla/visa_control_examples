@@ -145,7 +145,7 @@ scaleddata = (data-yoffset)*ymult+yzero
 
 #Create a time vector starting at xzero, ending at the end of the record,
 #with the same number of points as the record length
-scaledtime = numpy.arange(xzero,xzero+(xincrement*numberofpoints),xincrement)
+scaledtime = np.arange(xzero,xzero+(xincrement*numberofpoints),xincrement)
 
 print('Plot generated.')
 #plot the figure with correct scaling

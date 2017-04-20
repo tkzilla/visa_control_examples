@@ -24,7 +24,8 @@ import matplotlib.pyplot as plt
 
 """#################SEARCH/CONNECT#################"""
 rm = visa.ResourceManager()
-inst = rm.open_resource('TCPIP::127.0.0.1::INSTR')	
+# inst = rm.open_resource('TCPIP::192.168.1.14::INSTR')	
+inst = rm.open_resource('GPIB8::1::INSTR')
 inst.timeout = 25000
 instId = inst.ask('*idn?')
 print(instId)
@@ -44,7 +45,7 @@ inst.write('abort')
 
 """#################CONFIGURE INSTRUMENT#################"""
 freq = 1e9
-span = 5e6
+span = 40e6
 refLevel = 0
 
 # set up spectrum acquisition parameters
@@ -54,7 +55,7 @@ inst.write('input:rlevel {}'.format(refLevel))
 
 # open new displays
 inst.write('display:ddemod:measview:new conste') # constellation
-inst.write('display:ddemod:measview:new stable') # symbol table
+# inst.write('display:ddemod:measview:new stable') # symbol table
 inst.write('display:ddemod:measview:new evm') # EVM vs Time
 
 # turn off trigger and disable continuous capture (enable single shot mode)
@@ -62,17 +63,21 @@ inst.write('trigger:status off')
 inst.write('initiate:continuous off')
 
 # configure digital demodulation (QPSK, 1 MSym/s, RRC/RC filters, alpha 0.3)
-symRate = 1e6
+symRate = 10e6
 alpha = 0.3
 
 inst.write('sense:ddemod:modulation:type qpsk')
 inst.write('sense:ddemod:srate {}'.format(symRate))
-inst.write('sense:ddemod:filter:measurement rrcosine')
+inst.write('sense:ddemod:filter:measurement off')
 inst.write('sense:ddemod:filter:reference rcosine')
 inst.write('sense:ddemod:filter:alpha {}'.format(alpha))
+inst.write('sense:ddemod:symbol:points one')
+inst.write('sense:ddemod:analysis:length 20000')
+print(inst.ask('sense:acquisition:samples?'))
 
 # start acquisition
 inst.write('initiate:immediate')
+inst.timeout = 100000
 # wait for acquisition to finish
 inst.ask('*opc?')
 
@@ -88,6 +93,8 @@ evm = [float(value) for value in results]
 # see Python's format spec docs for more details: https://goo.gl/YmjGzV
 print('EVM (RMS): {0[0]:2.3f}%, EVM (peak): {0[1]:2.3f}%, Symbol: {0[2]:<4.0f}'
 	.format(evm))
+
+# inst.write('sense:signalvu:acquisition:control:samplerate 0')
 
 # get EVM vs time data
 evmVsTime = inst.query_binary_values('fetch:evm:trace?')

@@ -82,6 +82,9 @@ print('Compiling Waveform')
 awg.write('rfgsignal:compile')
 awg.ask('*OPC?')
 
+error = awg.ask( 'SYST:ERR:ALL?')
+print('Status: ', error)
+
 # Configuring Marker Data
 print('Generating Marker Data From Text File.')
 wname = awg.ask('wlist:name? 1').rstrip()
