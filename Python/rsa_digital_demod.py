@@ -24,8 +24,8 @@ import matplotlib.pyplot as plt
 
 """#################SEARCH/CONNECT#################"""
 rm = visa.ResourceManager()
-# inst = rm.open_resource('TCPIP::192.168.1.14::INSTR')	
-inst = rm.open_resource('GPIB8::1::INSTR')
+inst = rm.open_resource('TCPIP::192.168.1.11::INSTR')	
+# inst = rm.open_resource('GPIB8::1::INSTR')
 inst.timeout = 25000
 instId = inst.ask('*idn?')
 print(instId)
@@ -73,7 +73,7 @@ inst.write('sense:ddemod:filter:reference rcosine')
 inst.write('sense:ddemod:filter:alpha {}'.format(alpha))
 inst.write('sense:ddemod:symbol:points one')
 inst.write('sense:ddemod:analysis:length 20000')
-print(inst.ask('sense:acquisition:samples?'))
+# print(inst.ask('sense:acquisition:samples?'))
 
 # start acquisition
 inst.write('initiate:immediate')
@@ -94,7 +94,7 @@ evm = [float(value) for value in results]
 print('EVM (RMS): {0[0]:2.3f}%, EVM (peak): {0[1]:2.3f}%, Symbol: {0[2]:<4.0f}'
 	.format(evm))
 
-# inst.write('sense:signalvu:acquisition:control:samplerate 0')
+inst.write('sense:signalvu:acquisition:control:sample:rate 0')
 
 # get EVM vs time data
 evmVsTime = inst.query_binary_values('fetch:evm:trace?')
