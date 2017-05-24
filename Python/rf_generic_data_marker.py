@@ -1,5 +1,3 @@
-# rf_generic_data_marker.py
-
 """
 VISA: SourceXpress/AWG RF Generic Signal Data Markers
 Author: Morgan Allison
@@ -31,10 +29,10 @@ from os import getcwd
 rm = visa.ResourceManager()
 awg = rm.open_resource('GPIB8::1::INSTR')
 awg.timeout = 25000
-print(awg.ask('*idn?'))
+print(awg.query('*idn?'))
 awg.write('*rst')
 awg.write('*cls')
-awg.ask('*opc?')
+awg.query('*opc?')
 
 # Waveform Setup
 # ###############################INPUT USER PARAMETERS HERE
@@ -50,7 +48,7 @@ print('Creating Waveform Data.\n')
 
 awg.write('wplugin:active "RF Generic Signal"')
 awg.write('rfgsignal:reset')
-awg.ask('*OPC?')
+awg.query('*OPC?')
 
 awg.write('rfgsignal:carrier1:frequency {}'.format(centerFreq))
 awg.write('rfgsignal:carrier1:type dmodulation')
@@ -81,16 +79,16 @@ awg.write('rfgsignal:compile:play off')
 
 print('Compiling Waveform\n')
 awg.write('rfgsignal:compile')
-awg.ask('*OPC?')
+awg.query('*OPC?')
 
 # Configuring Marker Data
 print('Generating Marker Data From Text File.\n')
-wfmName = awg.ask('wlist:name? 1').rstrip()
-wlength = int(awg.ask('wlist:waveform:length? {}'.format(wfmName.rstrip())))
+wfmName = awg.query('wlist:name? 1').rstrip()
+wlength = int(awg.query('wlist:waveform:length? {}'.format(wfmName.rstrip())))
 
 sampPerSym = int(sampRate/symRate)
 with open(fileName) as f:
-	raw = f.read().strip()
+    raw = f.read().strip()
 raw = raw.split('\n')
 markerValues = [int(i) for i in raw]
 
@@ -128,15 +126,15 @@ print('Loading/playing waveform.\n')
 
 awg.write('clock:srate {}'.format(sampRate))
 awg.write('source1:dac:resolution 8')
-awg.ask('*OPC?')
+awg.query('*OPC?')
 
 awg.write('output1 on')
 awg.write('source1:rmode triggered')
 awg.write('source1:tinput atrigger')
 awg.write('awgcontrol:run:immediate')
-awg.ask('*OPC?')
+awg.query('*OPC?')
 
 # Check for errors
-error = awg.ask( 'SYST:ERR:ALL?')
+error = awg.query('SYST:ERR:ALL?')
 print('Status: ', error)
 awg.close()

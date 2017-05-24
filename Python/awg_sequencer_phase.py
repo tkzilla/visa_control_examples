@@ -20,7 +20,7 @@ import numpy as np
 rm = visa.ResourceManager('@py')
 awg = rm.open_resource('TCPIP::192.168.1.12::INSTR')
 awg.timeout = 25000
-print(awg.ask('*idn?'))
+print(awg.query('*idn?'))
 awg.write('*rst')
 awg.write('*cls')
 
@@ -55,7 +55,7 @@ for name, data, count, jump in transferList:
     awg.write('wlist:waveform:new "{}", {}'.format(name, recordLength))
     stringArg = 'wlist:waveform:data "{}", 0, {}, '.format(name, recordLength)
     awg.write_binary_values(stringArg, data)
-    awg.ask('*opc?')
+    awg.query('*opc?')
     awg.write('slist:seq:step{}:tasset1:wav "{}", "{}"'.format(i,seqName,name))
     awg.write('slist:seq:step{}:tasset2:wav "{}", "{}"'.format(i,seqName,name))
     awg.write('slist:seq:step{}:rcount "{}", {}'.format(i, seqName, count))
@@ -70,7 +70,7 @@ awg.write('source2:casset:sequence "{}", 2'.format(seqName))
 awg.write('output1:state on')
 awg.write('output2:state on')
 awg.write('awgcontrol:run:immediate')
-awg.ask('*opc?')
+awg.query('*opc?')
 
 delay = ['100ps', '80ps', '60ps', '40ps', '20ps', '0ps', 
     '-20ps', '-40ps', '-60ps', '-80ps', '-100ps']
@@ -79,5 +79,5 @@ for d in delay:
     awg.write('source1:skew {}'.format(d))
     awg.write('trigger:immediate atrigger')
 
-print(awg.ask('system:error:all?'))
+print(awg.query('system:error:all?'))
 awg.close()

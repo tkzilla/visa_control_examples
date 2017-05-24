@@ -19,18 +19,18 @@ import visa
 rm = visa.ResourceManager()
 rsa = rm.open_resource('TCPIP::192.168.1.9::INSTR')
 rsa.timeout = 10000
-print(rsa.ask('*idn?'))
+print(rsa.query('*idn?'))
 rsa.write('*cls')
 rsa.write('abort')
 rsa.write('system:preset')
 
 """#################INITIALIZE VARIABLES#################"""
-#configure acquisition parameters
+# configure acquisition parameters
 cf = 2.4453e9
 span = 40e6
 
 """#################CONFIGURE INSTRUMENT#################"""
-#configure DPX measurement
+# configure DPX measurement
 rsa.write('display:general:measview:new DPX')
 rsa.write('sense:dpx:plot split')
 rsa.write('spectrum:frequency:center {}'.format(cf))
@@ -38,13 +38,13 @@ rsa.write('spectrum:frequency:span {}'.format(span))
 
 """#################ACQUIRE/PROCESS DATA#################"""
 rsa.write('initiate:immediate')
-rsa.ask('*opc?')
-rsa.write('trace1:dpx 1')   # Trace 1
-rsa.write('trace2:dpx 1')   # Trace 2
-rsa.write('trace3:dpx 1')   # Trace 3
-rsa.write('trace4:dpx 0')   # Math
-rsa.write('trace5:dpx 1')   # Bitmap
-rsa.write('trace6:dpx 1')   # DPXogram
-rsa.write('trace7:dpx 1')   # DPXogram Line
+rsa.query('*opc?')
+rsa.write('trace1:dpx 1')  # Trace 1
+rsa.write('trace2:dpx 1')  # Trace 2
+rsa.write('trace3:dpx 1')  # Trace 3
+rsa.write('trace4:dpx 0')  # Math
+rsa.write('trace5:dpx 1')  # Bitmap
+rsa.write('trace6:dpx 1')  # DPXogram
+rsa.write('trace7:dpx 1')  # DPXogram Line
 
 rsa.close()

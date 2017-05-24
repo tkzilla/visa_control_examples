@@ -22,14 +22,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class MDO():
+class MDO:
     def __init__(self, instID, timeout=25000):
         self.inst = visa.ResourceManager().open_resource(instID)
         self.inst.timeout = timeout
-        print('Connected to ', self.inst.ask('*IDN?'))
+        print('Connected to ', self.inst.query('*IDN?'))
         self.inst.write('*RST')
         self.inst.write('*CLS')
-
 
     def setup(self, cf, span, trigLevel, vScale, hScale, hPos=10):
         self.inst.write('rf:frequency {}'.format(cf))
@@ -43,15 +42,14 @@ class MDO():
         self.inst.write('trigger:a:logic:threshold:rf {}'.format(trigLevel))
         self.inst.write('data:source rf_amplitude')
 
-
     def get_waveform_info(self):
         self.inst.write('acquire:stopafter sequence')
         self.inst.write('acquire:state on')
-        self.inst.ask('*OPC?')
-        binaryFormat = self.inst.ask('wfmoutpre:bn_fmt?').rstrip()
-        numBytes = self.inst.ask('wfmoutpre:byt_nr?').rstrip()
-        byteOrder = self.inst.ask('wfmoutpre:byt_or?').rstrip()
-        encoding = self.inst.ask('data:encdg?').rstrip()
+        self.inst.query('*OPC?')
+        binaryFormat = self.inst.query('wfmoutpre:bn_fmt?').rstrip()
+        numBytes = self.inst.query('wfmoutpre:byt_nr?').rstrip()
+        byteOrder = self.inst.query('wfmoutpre:byt_or?').rstrip()
+        encoding = self.inst.query('data:encdg?').rstrip()
         if 'RIB' in encoding or 'FAS' in encoding:
             self.dType = 'b'
             self.bigEndian = True
@@ -75,13 +73,13 @@ class MDO():
         else:
             raise visa.InvalidBinaryFormat
 
-        self.numPoints = int(self.inst.ask('wfmoutpre:nr_pt?'))
-        self.xIncr = float(self.inst.ask('wfmoutpre:xincr?'))
-        self.yMult = float(self.inst.ask('wfmoutpre:ymult?'))
-        self.yOff = float(self.inst.ask('wfmoutpre:yoff?'))
+        self.numPoints = int(self.inst.query('wfmoutpre:nr_pt?'))
+        self.xIncr = float(self.inst.query('wfmoutpre:xincr?'))
+        self.yMult = float(self.inst.query('wfmoutpre:ymult?'))
+        self.yOff = float(self.inst.query('wfmoutpre:yoff?'))
 
         # self.inst.write('header on')
-        # print(self.inst.ask('wfmoutpre?'))
+        # print(self.inst.query('wfmoutpre?'))
         # self.inst.write('header off')
 
 

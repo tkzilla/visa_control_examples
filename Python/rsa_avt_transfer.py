@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 rm = visa.ResourceManager()
 rsa = rm.open_resource('GPIB8::1::INSTR')
 rsa.timeout = 10000
-print(rsa.ask('*idn?'))
+print(rsa.query('*idn?'))
 rsa.write('*rst')
 rsa.write('*cls')
 
@@ -68,14 +68,14 @@ rsa.write('trigger:status on')
 """#################ACQUIRE/PROCESS DATA#################"""
 # start acquisition
 rsa.write('initiate:immediate')
-rsa.ask('*opc?')
+rsa.query('*opc?')
 
 # get raw amplitude vs time data from RSA
 avt = rsa.query_binary_values('fetch:avtime:first?', datatype='f',
 	container=np.array)
 
-acqStart = float(rsa.ask('display:avtime:x:scale:offset?'))
-acqEnd = float(rsa.ask('display:avtime:x:scale:full?'))
+acqStart = float(rsa.query('display:avtime:x:scale:offset?'))
+acqEnd = float(rsa.query('display:avtime:x:scale:full?'))
 time = np.linspace(acqStart,acqEnd, len(avt))
 
 

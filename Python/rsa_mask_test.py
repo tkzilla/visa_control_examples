@@ -18,7 +18,7 @@ import visa
 rm = visa.ResourceManager()
 rsa = rm.open_resource('TCPIP::192.168.1.9::INSTR')
 rsa.timeout = 10000
-print(rsa.ask('*idn?'))
+print(rsa.query('*idn?'))
 rsa.write('*cls')
 
 cf = 2.4453e9
@@ -39,12 +39,12 @@ rsa.write('calculate:search:limit:operation:feed "dpx", "Trace1"')
 rsa.write('calculate:search:limit:state on')
 
 rsa.write('initiate:immediate')
-rsa.ask('*opc?')
+rsa.query('*opc?')
 
-if int(rsa.ask('calculate:search:limit:fail?').strip()) == 1:
-    maskPoints = rsa.ask('calculate:search:limit:report:data?')
+if int(rsa.query('calculate:search:limit:fail?').strip()) == 1:
+    maskPoints = rsa.query('calculate:search:limit:report:data?')
     # print(maskPoints)
-    maskPoints = [m.replace('"','') for m in maskPoints.strip().split(',"')]
+    maskPoints = [m.replace('"', '') for m in maskPoints.strip().split(',"')]
     print('Mask Violations: {}'.format(maskPoints[0]))
     for m in maskPoints[1:]:
         print('Violation Range: {}'.format(m))

@@ -21,19 +21,17 @@ import visa
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 """#################SEARCH/CONNECT#################"""
 rm = visa.ResourceManager()
 rsa = rm.open_resource('GPIB8::1::INSTR')
 rsa.timeout = 10000
-print(rsa.ask('*idn?'))
+print(rsa.query('*idn?'))
 rsa.write('*rst')
 rsa.write('*cls')
 rsa.write('abort')
 
-
 """#################CONFIGURE INSTRUMENT#################"""
-#configure acquisition parameters
+# configure acquisition parameters
 cf = 1e9
 span = 40e6
 refLevel = 0
@@ -44,31 +42,29 @@ rsa.write('input:rlevel {}'.format(refLevel))
 rsa.write('initiate:continuous off')
 rsa.write('trigger:status off')
 
-
 """#################ACQUIRE/PROCESS DATA#################"""
-#start acquisition THIS MUST BE DONE
-#it is an overlapping command, so *OPC? MUST be sent for synchronization
+# start acquisition THIS MUST BE DONE
+# it is an overlapping command, so *OPC? MUST be sent for synchronization
 rsa.write('initiate:immediate')
-rsa.ask('*opc?')
+rsa.query('*opc?')
 
-spectrum = rsa.query_binary_values('fetch:spectrum:trace?', datatype='f', 
-	container=np.array)
+spectrum = rsa.query_binary_values('fetch:spectrum:trace?', datatype='f',
+                                   container=np.array)
 
-#generate the frequency vector for plotting
-fMin = cf-span/2
-fMax = cf+span/2
+# generate the frequency vector for plotting
+fMin = cf - span / 2
+fMax = cf + span / 2
 freq = np.linspace(fMin, fMax, len(spectrum))
 
-
 """#################PLOTS#################"""
-fig = plt.figure(1, figsize=(15,8))
+fig = plt.figure(1, figsize=(15, 8))
 ax = fig.add_subplot(111, axisbg='k')
-ax.plot(freq/1e9, spectrum, 'y')
+ax.plot(freq / 1e9, spectrum, 'y')
 ax.set_title('Spectrum')
 ax.set_xlabel('Frequency (GHz)')
 ax.set_ylabel('Amplitude (dBm)')
-ax.set_xlim(fMin/1e9, fMax/1e9)
-ax.set_ylim(refLevel-100, refLevel)
+ax.set_xlim(fMin / 1e9, fMax / 1e9)
+ax.set_ylim(refLevel - 100, refLevel)
 plt.show()
 
 rsa.close()
