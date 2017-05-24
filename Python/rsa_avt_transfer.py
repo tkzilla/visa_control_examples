@@ -26,6 +26,9 @@ import matplotlib.pyplot as plt
 rm = visa.ResourceManager()
 rsa = rm.open_resource('GPIB8::1::INSTR')
 rsa.timeout = 10000
+rsa.encoding = 'latin_1'
+rsa.write_termination = None
+rsa.read_termination = '\n'
 print(rsa.query('*idn?'))
 rsa.write('*rst')
 rsa.write('*cls')
@@ -81,7 +84,7 @@ time = np.linspace(acqStart,acqEnd, len(avt))
 
 """#################PLOTS#################"""
 # plot the data
-fig = plt.figure(1, figsize=(20,10))
+fig = plt.figure(1, figsize=(20, 10))
 ax = fig.add_subplot(111, axisbg='k')
 ax.plot(time, avt, 'y')
 ax.set_title('Amplitude vs Time')

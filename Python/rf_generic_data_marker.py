@@ -29,6 +29,9 @@ from os import getcwd
 rm = visa.ResourceManager()
 awg = rm.open_resource('GPIB8::1::INSTR')
 awg.timeout = 25000
+awg.encoding = 'latin_1'
+awg.write_termination = None
+awg.read_termination = '\n'
 print(awg.query('*idn?'))
 awg.write('*rst')
 awg.write('*cls')

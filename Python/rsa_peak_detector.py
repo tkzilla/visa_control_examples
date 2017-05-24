@@ -25,6 +25,9 @@ import matplotlib.pyplot as plt
 rm = visa.ResourceManager()
 rsa = rm.open_resource('GPIB8::1::INSTR')
 rsa.timeout = 10000
+rsa.encoding = 'latin_1'
+rsa.write_termination = None
+rsa.read_termination = '\n'
 print(rsa.query('*idn?'))
 rsa.write('*rst')
 rsa.write('*cls')

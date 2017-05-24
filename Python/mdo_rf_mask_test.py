@@ -26,6 +26,10 @@ class MDO:
     def __init__(self, instID, timeout=25000):
         self.inst = visa.ResourceManager().open_resource(instID)
         self.inst.timeout = timeout
+        self.inst.encoding = 'latin_1'
+        self.inst.write_termination = None
+        self.inst.read_termination = '\n'
+
         print('Connected to ', self.inst.query('*IDN?'))
         self.inst.write('*RST')
         self.inst.write('*CLS')

@@ -2,7 +2,7 @@
 VISA: RSA Spectrum Trace Transfer
 Author: Morgan Allison
 Date created: Unknown
-Date edited: 2/17
+Date edited: 5/17
 This program transfers the Spectrum trace from the RSA to the 
 computer and plots the results.
 Windows 7 64-bit, TekVISA 4.0.4
@@ -25,6 +25,9 @@ import matplotlib.pyplot as plt
 rm = visa.ResourceManager()
 rsa = rm.open_resource('GPIB8::1::INSTR')
 rsa.timeout = 10000
+rsa.encoding = 'latin_1'
+rsa.write_termination = None
+rsa.read_termination = '\n'
 print(rsa.query('*idn?'))
 rsa.write('*rst')
 rsa.write('*cls')
@@ -32,7 +35,7 @@ rsa.write('abort')
 
 """#################CONFIGURE INSTRUMENT#################"""
 # configure acquisition parameters
-cf = 1e9
+cf = 2.4453e9
 span = 40e6
 refLevel = 0
 rsa.write('spectrum:frequency:center {}'.format(cf))
@@ -58,7 +61,7 @@ freq = np.linspace(fMin, fMax, len(spectrum))
 
 """#################PLOTS#################"""
 fig = plt.figure(1, figsize=(15, 8))
-ax = fig.add_subplot(111, axisbg='k')
+ax = fig.add_subplot(111, facecolor='k')
 ax.plot(freq / 1e9, spectrum, 'y')
 ax.set_title('Spectrum')
 ax.set_xlabel('Frequency (GHz)')

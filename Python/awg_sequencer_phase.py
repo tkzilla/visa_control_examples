@@ -20,6 +20,9 @@ import numpy as np
 rm = visa.ResourceManager('@py')
 awg = rm.open_resource('TCPIP::192.168.1.12::INSTR')
 awg.timeout = 25000
+awg.encoding = 'latin_1'
+awg.write_termination = None
+awg.read_termination = '\n'
 print(awg.query('*idn?'))
 awg.write('*rst')
 awg.write('*cls')

@@ -19,6 +19,9 @@ import visa
 rm = visa.ResourceManager()
 rsa = rm.open_resource('TCPIP::192.168.1.9::INSTR')
 rsa.timeout = 10000
+rsa.encoding = 'latin_1'
+rsa.write_termination = None
+rsa.read_termination = '\n'
 print(rsa.query('*idn?'))
 rsa.write('*cls')
 rsa.write('abort')

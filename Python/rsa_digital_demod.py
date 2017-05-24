@@ -27,6 +27,9 @@ rm = visa.ResourceManager()
 inst = rm.open_resource('TCPIP::192.168.1.11::INSTR')
 # inst = rm.open_resource('GPIB8::1::INSTR')
 inst.timeout = 25000
+inst.encoding = 'latin_1'
+inst.write_termination = None
+inst.read_termination = '\n'
 instId = inst.query('*idn?')
 print(instId)
 if 'MSO' in instId or 'DPO' in instId:
