@@ -40,8 +40,8 @@ if 'MSO' in instId or 'DPO' in instId:
     print('Configuring SignalVu on instrument.')
     inst.write('application:activate \"SignalVu Vector Signal Analysis Software\"')
 
-	# Undocumented command to disconnect SignalVu from sample rate control
-	inst.write('sense:signalvu:acquisition:control:sample:rate 0')
+    # Undocumented command to disconnect SignalVu from sample rate control
+    inst.write('sense:signalvu:acquisition:control:sample:rate 0')
 
 # preset, clear buffer, and stop acquisition
 inst.write('system:preset')
