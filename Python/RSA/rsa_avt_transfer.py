@@ -75,7 +75,7 @@ rsa.query('*opc?')
 
 # get raw amplitude vs time data from RSA
 avt = rsa.query_binary_values('fetch:avtime:first?', datatype='f',
-	container=np.array)
+    container=np.array)
 
 acqStart = float(rsa.query('display:avtime:x:scale:offset?'))
 acqEnd = float(rsa.query('display:avtime:x:scale:full?'))
@@ -85,7 +85,7 @@ time = np.linspace(acqStart,acqEnd, len(avt))
 """#################PLOTS#################"""
 # plot the data
 fig = plt.figure(1, figsize=(20, 10))
-ax = fig.add_subplot(111, axisbg='k')
+ax = fig.add_subplot(111, facecolor='k')
 ax.plot(time, avt, 'y')
 ax.set_title('Amplitude vs Time')
 ax.set_ylabel('Amplitude (dBm)')
