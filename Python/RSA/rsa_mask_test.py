@@ -1,10 +1,9 @@
 """
 VISA Control: RSA Mask Test Query
 Author: Morgan Allison
-Date Created: 5/17
-Date Edited: 5/17
-Sets up a default mask test and queries the frequencies at which violations
-occured.
+Date Edited: 8/17
+Sets up a default mask test and queries the frequencies
+at which violations occured.
 Windows 7 64-bit, NI-VISA 5.4/TekVISA4.0.4
 Python 3.6.0 64-bit (Anaconda 4.3.0)
 To get Anaconda: http://continuum.io/downloads
@@ -16,7 +15,8 @@ import visa
 
 """#################SEARCH/CONNECT#################"""
 rm = visa.ResourceManager()
-rsa = rm.open_resource('TCPIP::192.168.1.9::INSTR')
+# rsa = rm.open_resource('TCPIP::192.168.1.9::INSTR')
+rsa = rm.open_resource('GPIB8::1::INSTR')
 rsa.timeout = 10000
 rsa.encoding = 'latin_1'
 rsa.write_termination = None

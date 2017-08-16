@@ -24,8 +24,8 @@ import matplotlib.pyplot as plt
 
 """#################SEARCH/CONNECT#################"""
 rm = visa.ResourceManager()
-inst = rm.open_resource('TCPIP::192.168.1.11::INSTR')
-# inst = rm.open_resource('GPIB8::1::INSTR')
+# inst = rm.open_resource('TCPIP::192.168.1.11::INSTR')
+inst = rm.open_resource('GPIB8::1::INSTR')
 inst.timeout = 25000
 inst.encoding = 'latin_1'
 inst.write_termination = None
@@ -40,8 +40,12 @@ if 'MSO' in instId or 'DPO' in instId:
     print('Configuring SignalVu on instrument.')
     inst.write('application:activate \"SignalVu Vector Signal Analysis Software\"')
 
-    # Undocumented command to disconnect SignalVu from sample rate control
-    inst.write('sense:signalvu:acquisition:control:sample:rate 0')
+    # Undocumented commands to disconnect SignalVu from sample rate control
+    # and set scope sample rate directly
+    sampleRate = 50e9
+    inst.write('sense:signalvu:acquisition:control:sample:rate off')
+    inst.write('sense:signalvu:acquisition:digitizer:sample:rate {}'.format(
+        sampleRate))
 
 # preset, clear buffer, and stop acquisition
 inst.write('system:preset')
@@ -77,7 +81,7 @@ inst.write('sense:ddemod:filter:measurement off')
 inst.write('sense:ddemod:filter:reference rcosine')
 inst.write('sense:ddemod:filter:alpha {}'.format(alpha))
 inst.write('sense:ddemod:symbol:points one')
-inst.write('sense:ddemod:analysis:length 20000')
+# inst.write('sense:ddemod:analysis:length 20000')
 # print(inst.query('sense:acquisition:samples?'))
 
 # start acquisition
@@ -102,22 +106,7 @@ print('EVM (RMS): {0[0]:2.3f}%, EVM (peak): {0[1]:2.3f}%, Symbol: {0[2]:<4.0f}'
 # get EVM vs time data
 evmVsTime = inst.query_binary_values('fetch:evm:trace?')
 
-# determine points per symbol to create a plottable x axis
-ptsPerSymbol = inst.query('sense:ddemod:symbol:points?')
-if ptsPerSymbol == 'ONE\n':
-    ptsPerSymbol = 1.0
-elif ptsPerSymbol == 'TWO\n':
-    ptsPerSymbol = 2.0
-elif ptsPerSymbol == 'FOUR\n':
-    ptsPerSymbol = 4.0
-elif ptsPerSymbol == 'EIGHT\n':
-    ptsPerSymbol = 8.0
-else:
-    ptsPerSymbol = 4.0  # default
-
-symbol = np.array(range(len(evmVsTime))) / ptsPerSymbol
-
-plt.plot(symbol, evmVsTime)
+plt.plot(evmVsTime)
 plt.title('EVM vs Symbol #')
 plt.xlabel('Symbol')
 plt.ylabel('EVM (%)')

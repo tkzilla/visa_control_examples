@@ -38,10 +38,10 @@ rsa.write('*cls')
 # configure acquisition parameters
 cf = 2.4453e9
 span = 40e6
-refLevel = -40
+refLevel = 0
 timeScale = 100e-6
 timeOffset = 0
-trigLevel = -50
+trigLevel = -10
 
 
 """#################CONFIGURE INSTRUMENT#################"""
@@ -84,7 +84,7 @@ time = np.linspace(acqStart,acqEnd, len(avt))
 
 """#################PLOTS#################"""
 # plot the data
-fig = plt.figure(1, figsize=(20, 10))
+fig = plt.figure(1, figsize=(10, 7))
 ax = fig.add_subplot(111, facecolor='k')
 ax.plot(time, avt, 'y')
 ax.set_title('Amplitude vs Time')
