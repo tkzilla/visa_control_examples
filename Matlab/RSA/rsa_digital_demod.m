@@ -1,4 +1,4 @@
-% VISA Control: RSA AvT Transfer
+% VISA Control: RSA Digital Demod
 % Author: Morgan Allison
 % Date Edited: 8/17
 % This program transfers the Amplitude vs Time trace from the RSA to the 
