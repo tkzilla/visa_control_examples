@@ -16,8 +16,10 @@ Tested on RSA5126B firmware v3.9.0031
 import visa
 
 """#################SEARCH/CONNECT#################"""
-rm = visa.ResourceManager()
-rsa = rm.open_resource('TCPIP::192.168.1.9::INSTR')
+rm = visa.ResourceManager('@py')
+# rsa = rm.open_resource('TCPIP::192.168.1.9::INSTR')
+rsa = rm.open_resource('TCPIP::127.0.0.1::INSTR')
+# rsa = rm.open_resource('GPIB8::1::INSTR')
 rsa.timeout = 10000
 rsa.encoding = 'latin_1'
 rsa.write_termination = None
