@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f1c6adb-15e8-4c40-b302-e97644bf2cc0" name="Default" comment="GPIB/PEP 8 Formatting Adjustments, New Files&#10;Added dpo_position_delay.py and dpo_signalvu_control.py.&#10;Converted all PyVISA .ask() methods to .query() to conform with GPIB/VXI-11 formatting.&#10;Added latin_1 encoding, None write termination, and '\n' read termination to all scripts&#10;Conformed scripts to PEP 8 format.&#10;Converted tabs to spaces.">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Python/AWG/awg_simple_waveform_sender.py" afterPath="$PROJECT_DIR$/Python/AWG/awg_simple_waveform_sender.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Python/RSA/rsa_dpx_trace_selector.py" afterPath="$PROJECT_DIR$/Python/RSA/rsa_dpx_trace_selector.py" />
-    </list>
+    <list default="true" id="5f1c6adb-15e8-4c40-b302-e97644bf2cc0" name="Default" comment="GPIB/PEP 8 Formatting Adjustments, New Files&#10;Added dpo_position_delay.py and dpo_signalvu_control.py.&#10;Converted all PyVISA .ask() methods to .query() to conform with GPIB/VXI-11 formatting.&#10;Added latin_1 encoding, None write termination, and '\n' read termination to all scripts&#10;Conformed scripts to PEP 8 format.&#10;Converted tabs to spaces." />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -29,8 +25,8 @@
       <file leaf-file-name="awg_simple_waveform_sender.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Python/AWG/awg_simple_waveform_sender.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="32" column="17" lean-forward="true" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
+            <state relative-caret-position="255">
+              <caret line="39" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -190,7 +186,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../RSA_API/Python" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../visa_sandbox" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="settings.github" />
   </component>
@@ -424,12 +420,11 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="960" y="0" width="960" height="1040" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29777777" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -581,8 +576,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Python/AWG/awg_simple_waveform_sender.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="32" column="17" lean-forward="true" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
+        <state relative-caret-position="255">
+          <caret line="39" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
           <folding />
         </state>
       </provider>
