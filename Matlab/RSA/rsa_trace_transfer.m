@@ -10,8 +10,7 @@
 % http://www.tek.com/spectrum-analyzer/inst5000-manual-7
 % Download SignalVu programmer manual: 
 % http://www.tek.com/oscilloscope/dpo70000-mso70000-manual-22
-% Tested on RSA306B/RSA507A with SignalVu-PC 3.10.0030, 
-% DPO77002SX with SignalVu 3.9.0051
+% Tested on RSA306B, RSA507A, DPO77002SX
 
 
 %% #################SEARCH/CONNECT#################
@@ -41,14 +40,14 @@ if contains(instID, 'MSO') || contains(instID, 'DPO')
     fprintf(inst, 'sense:signalvu:acquisition:digitizer:sample:rate %d', sampleRate);
 end
 
-% preset, clear buffer, and stop acquisition
+% Preset, clear buffer, and stop acquisition.
 fprintf(inst, 'system:preset');
 fprintf(inst, '*cls');
 fprintf(inst, 'abort');
 
 
 %% #################CONFIGURE INSTRUMENT#################%% 
-% configure acquisition parameters
+% Configure acquisition parameters.
 cf = 2.4453e9;
 span = 40e6;
 refLevel = 0;
@@ -61,20 +60,18 @@ fprintf(inst, 'initiate:continuous off');
 fprintf(inst, 'trigger:status off');
 
 %% #################ACQUIRE/PROCESS DATA#################%% 
-% start acquisition THIS MUST BE DONE
-% it is an overlapping command, so *OPC? MUST be sent for synchronization
 fprintf(inst, 'initiate:immediate');
 query(inst, '*opc?');
 
 fprintf(inst, 'fetch:spectrum:trace?');
 spectrum = binblockread(inst, 'float');
 
-% generate the frequency vector for plotting
+%% #################PLOTS#################%% 
+% Generate the frequency vector for plotting
 fMin = cf - span / 2;
 fMax = cf + span / 2;
 freq = linspace(fMin, fMax, length(spectrum));
 
-%% #################PLOTS#################%% 
 figure(1);
 whitebg(1,'k');
 plot((freq/1e9), spectrum, 'y')

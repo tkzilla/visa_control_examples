@@ -1,14 +1,15 @@
 % VISA Control: RSA Mask Test
 % Author: Morgan Allison
-% Date Edited: 8/17
+% Updated: 11/17
 % This program sets up a default mask test and queries the frequencies 
 % at which violations occured.
 % Windows 7 64-bit, TekVISA 4.0.4
 % Matlab r2017a with ICT
-% Download SignalVu-PC programmer manual: http://www.tek.com/node/1828803
-% Download RSA5100B programmer manual: 
+% Download SignalVu-PC programmer manual:
+% https://www.tek.com/product-software-series/signalvu-pc-manual/signalvu-pc-1
+% Download RSA5100B programmer manual:
 % http://www.tek.com/spectrum-analyzer/inst5000-manual-7
-% Tested on RSA306B/RSA507A with SignalVu-PC 3.10.0030
+% Tested on RSA306B, RSA507A 
 
 
 %% #################SEARCH/CONNECT#################
@@ -25,7 +26,7 @@ inst.timeout = 15;
 instID = query(inst,'*idn?');
 fprintf('Connected to %s\n',instID);
 
-% preset, clear buffer, and stop acquisition
+% Preset, clear buffer, and stop acquisition.
 fprintf(inst, 'system:preset');
 fprintf(inst, '*cls');
 fprintf(inst, 'abort');
@@ -35,7 +36,6 @@ fprintf(inst, 'abort');
 cf = 2.4453e9;
 span = 40e6;
 
-fprintf(inst, 'system:preset');
 fprintf(inst, 'display:general:measview:new dpx');
 fprintf(inst, 'spectrum:frequency:center %d', cf);
 fprintf(inst, 'spectrum:frequency:span %d', span);

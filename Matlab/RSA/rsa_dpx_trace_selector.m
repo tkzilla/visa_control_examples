@@ -1,15 +1,15 @@
 % VISA Control: RSA DPX Trace Selector
 % Author: Morgan Allison
-% Date Edited: 8/17
-% This program opens up a split DPX display and allows the user to select
-% the available traces. The trace numbers in the VISA commands are interpreted
-% in the comments below.
+% Updated: 11/17
+% This program opens a split DPX display and lets user select the available 
+% traces. Trace numbers in VISA commands are interpreted in comments below.
 % Windows 7 64-bit, TekVISA 4.0.4
 % Matlab r2017a with ICT
-% Download SignalVu-PC programmer manual: http://www.tek.com/node/1828803
-% Download RSA5100B programmer manual: 
+% Download SignalVu-PC programmer manual:
+% https://www.tek.com/product-software-series/signalvu-pc-manual/signalvu-pc-1
+% Download RSA5100B programmer manual:
 % http://www.tek.com/spectrum-analyzer/inst5000-manual-7
-% Tested on RSA306B/RSA507A with SignalVu-PC 3.10.0030
+% Tested on RSA306B, RSA507A
 
 
 %% #################SEARCH/CONNECT#################
@@ -26,19 +26,19 @@ inst.timeout = 15;
 instID = query(inst,'*idn?');
 fprintf('Connected to %s\n',instID);
 
-% preset, clear buffer, and stop acquisition
+% Preset, clear buffer, and stop acquisition.
 fprintf(inst, 'system:preset');
 fprintf(inst, '*cls');
 fprintf(inst, 'abort');
 
 
 %% #################INITIALIZE VARIABLES#################
-% configure acquisition parameters
+% Configure acquisition parameters.
 cf = 2.4453e9;
 span = 40e6;
 
 %% #################CONFIGURE INSTRUMENT#################
-% configure DPX measurement
+% Configure DPX measurement.
 fprintf(inst, 'display:general:measview:new DPX');
 fprintf(inst, 'sense:dpx:plot split');
 fprintf(inst, 'spectrum:frequency:center %d', cf);
