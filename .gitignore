@@ -142,3 +142,4 @@ $RECYCLE.BIN/
 # =========================
 Python/pySandbox/
 Matlab/matSandbox/
+*.csv

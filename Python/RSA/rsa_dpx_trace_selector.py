@@ -1,49 +1,53 @@
 """
 VISA: DPX Trace Selector
 Author: Morgan Allison
-Date created: Unknown
-Date edited: 5/17
+Updated: 11/17
 This program opens up a split DPX display and allows the user to select
 the available traces. The trace numbers in the VISA commands are interpreted
 in the comments below
-Windows 7 64-bit
-Python 3.6.0 64-bit (Anaconda 4.3.0)
-PyVISA 1.8 (pip install pyvisa)
+Windows 7 64-bit, TekVISA 4.0.4, Python 3.6.3 64-bit
+PyVISA 1.8
+To get PyVISA: pip install pyvisa
 To get Anaconda: http://continuum.io/downloads
-Tested on RSA5126B firmware v3.9.0031
+Download SignalVu-PC programmer manual:
+https://www.tek.com/product-software-series/signalvu-pc-manual/signalvu-pc-1
+Download RSA5100B programmer manual:
+http://www.tek.com/spectrum-analyzer/inst5000-manual-7
+Tested on RSA306B, RSA507A, RSA5126B
 """
 
 import visa
 
 """#################SEARCH/CONNECT#################"""
-rm = visa.ResourceManager('@py')
+rm = visa.ResourceManager()
 # rsa = rm.open_resource('TCPIP::192.168.1.9::INSTR')
-rsa = rm.open_resource('TCPIP::127.0.0.1::INSTR')
-# rsa = rm.open_resource('GPIB8::1::INSTR')
+rsa = rm.open_resource('GPIB8::1::INSTR')
 rsa.timeout = 10000
 rsa.encoding = 'latin_1'
 rsa.write_termination = None
 rsa.read_termination = '\n'
-print(rsa.query('*idn?'))
+print('Connected to', rsa.query('*idn?'))
+
+rsa.write('*rst')
 rsa.write('*cls')
 rsa.write('abort')
-rsa.write('system:preset')
 
-"""#################INITIALIZE VARIABLES#################"""
-# configure acquisition parameters
+
+"""#################CONFIGURE INSTRUMENT#################"""
+# Configure acquisition parameters
 cf = 2.4453e9
 span = 40e6
 
-"""#################CONFIGURE INSTRUMENT#################"""
-# configure DPX measurement
+# Configure DPX measurement
 rsa.write('display:general:measview:new DPX')
 rsa.write('sense:dpx:plot split')
 rsa.write('spectrum:frequency:center {}'.format(cf))
 rsa.write('spectrum:frequency:span {}'.format(span))
 
-"""#################ACQUIRE/PROCESS DATA#################"""
+"""#################ACQUIRE DATA#################"""
 rsa.write('initiate:immediate')
 rsa.query('*opc?')
+
 rsa.write('trace1:dpx 1')  # Trace 1
 rsa.write('trace2:dpx 1')  # Trace 2
 rsa.write('trace3:dpx 1')  # Trace 3

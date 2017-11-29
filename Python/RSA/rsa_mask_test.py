@@ -1,14 +1,18 @@
 """
 VISA Control: RSA Mask Test Query
 Author: Morgan Allison
-Date Edited: 8/17
+Updated: 11/17
 Sets up a default mask test and queries the frequencies
 at which violations occured.
-Windows 7 64-bit, NI-VISA 5.4/TekVISA4.0.4
-Python 3.6.0 64-bit (Anaconda 4.3.0)
+Windows 7 64-bit, TekVISA 4.0.4, Python 3.6.3 64-bit
+PyVISA 1.8
+To get PyVISA: pip install pyvisa
 To get Anaconda: http://continuum.io/downloads
-PyVISA 1.8 (pip install pyvisa)
-Tested on RSA5126B with firmware 3.9.0031
+Download SignalVu-PC programmer manual:
+https://www.tek.com/product-software-series/signalvu-pc-manual/signalvu-pc-1
+Download RSA5100B programmer manual:
+http://www.tek.com/spectrum-analyzer/inst5000-manual-7
+Tested on RSA306B, RSA507A, RSA5126B
 """
 
 import visa
@@ -21,17 +25,23 @@ rsa.timeout = 10000
 rsa.encoding = 'latin_1'
 rsa.write_termination = None
 rsa.read_termination = '\n'
-print(rsa.query('*idn?'))
-rsa.write('*cls')
+print('Connected to', rsa.query('*idn?'))
 
+rsa.write('*rst')
+rsa.write('*cls')
+rsa.write('abort')
+
+"""#################CONFIGURE INSTRUMENT#################"""
+# Configure acquisition parameters
 cf = 2.4453e9
 span = 40e6
 
-rsa.write('system:preset')
+# Configure new displays
 rsa.write('display:general:measview:new dpx')
 rsa.write('spectrum:frequency:center {}'.format(cf))
 rsa.write('spectrum:frequency:span {}'.format(span))
 
+# Configure mask test
 rsa.write('calculate:search:limit:match:beep on')
 rsa.write('calculate:search:limit:match:sacquire off')
 rsa.write('calculate:search:limit:match:sdata off')
@@ -41,9 +51,12 @@ rsa.write('calculate:search:limit:operation omask')
 rsa.write('calculate:search:limit:operation:feed "dpx", "Trace1"')
 rsa.write('calculate:search:limit:state on')
 
+
+"""#################ACQUIRE DATA#################"""
 rsa.write('initiate:immediate')
 rsa.query('*opc?')
 
+# Query and print mask violations
 if int(rsa.query('calculate:search:limit:fail?').strip()) == 1:
     maskPoints = rsa.query('calculate:search:limit:report:data?')
     # print(maskPoints)
@@ -53,3 +66,5 @@ if int(rsa.query('calculate:search:limit:fail?').strip()) == 1:
         print('Violation Range: {}'.format(m))
 else:
     print('No mask violations have occurred.')
+
+rsa.close()
