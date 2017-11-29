@@ -1,17 +1,18 @@
 """
 VISA Control: AvT and Spectrum Trace Transfer from SignalVu
 Author: Morgan Allison
-Date Created: 9/2014
-Date Edited: 5/2017
-This program transfers the Spectrum and Amplitude vs Time traces from the scope to the computer
-and plots the results. Test signal was a 10 us 10% duty cycle CW pulse centered at 2.4453 GHz. 
+Updated: 11/17
+Transfers the Spectrum and Amplitude vs Time traces from the scope
+to the computer and plots the results. Test signal was a 10 us
+10% duty cycle CW pulse centered at 2.4453 GHz.
 Windows 7 64-bit, TekVISA 4.0.4
-Python 3.6.0 64-bit (Anaconda 4.3.0)
-NumPy 1.11.2, MatPlotLib 2.0.0, PyVISA 1.8
+Python 3.6.3 64-bit (Anaconda 4.4.0)
+NumPy 1.13.3, MatPlotLib 2.0.2, PyVISA 1.8
 To get PyVISA: pip install pyvisa
 Download Anaconda: http://continuum.io/downloads
 Anaconda includes NumPy and MatPlotLib
-Download SignalVu-PC programmer manual: http://www.tek.com/node/1828803
+Download SignalVu-PC programmer manual:
+https://www.tek.com/oscilloscope/dpo70000-mso70000-manual-22
 Tested on DPO77002SX
 ####################
 SignalVu must be running on the scope for this script to work correctly
@@ -24,12 +25,11 @@ import matplotlib.pyplot as plt
 
 """#################SEARCH/CONNECT#################"""
 rm = visa.ResourceManager()
-dpo = rm.open_resource('TCPIP::192.168.1.14::INSTR')
+dpo = rm.open_resource('TCPIP::192.168.1.4::INSTR')
 dpo.timeout = 10000
 dpo.encoding = 'latin_1'
 dpo.write_termination = None
 dpo.read_termination = '\n'
-dpo.write('opcextended on')
 print(dpo.query('*idn?'))
 dpo.write('*rst')
 dpo.query('*opc?')
@@ -65,7 +65,7 @@ dpo.write('sense:analysis:start {}'.format(analysisOffset))
 dpo.write('sense:spectrum:start {}'.format(spectrumOffset))
 
 
-"""#################ACQUIRE/PROCESS DATA#################"""
+"""#################ACQUIRE DATA#################"""
 # start acquisition
 dpo.write('initiate:continuous off')
 dpo.write('initiate:immediate')
@@ -85,9 +85,11 @@ print('Getting spectrum trace.')
 spectrum = dpo.query_binary_values('fetch:spectrum:trace1?')
 dpo.query('*opc?')
 
+
+"""#################PLOT DATA#################"""
 # generate the time vector for plotting
 increment = (timeMax - timeMin) / len(avt)
-time = np.arange(timeMin, timeMax-increment, increment)
+time = np.arange(timeMin, timeMax - increment, increment)
 
 # generate the frequency vector for plotting
 fMin = cf - (span / 2)
@@ -97,8 +99,6 @@ freq = np.arange(fMin, fMax, increment)
 # print('Spectrum length: {}'.format(len(spectrum)))
 # print('Freq length: {}'.format(len(freq)))
 
-
-"""#################PLOTS#################"""
 print('Plotting data.')
 fig = plt.figure(1, figsize=(15, 10))
 ax1 = fig.add_subplot(211, facecolor='k')

@@ -137,3 +137,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Custom
+# =========================
+Python/pySandbox/
+Matlab/matSandbox/
