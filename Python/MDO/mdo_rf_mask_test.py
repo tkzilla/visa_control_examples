@@ -1,8 +1,7 @@
 """
 VISA: MDO RF vs Time Mask Test
 Author: Morgan Allison
-Date created: 3/17
-Date edited: 3/17
+Updated: 11/17
 This program captures an RF vs Time trace and allows the user to build
 a mask for that trace and test for violations.
 Windows 7 64-bit, TekVISA 4.0.4
@@ -11,10 +10,7 @@ NumPy 1.11.2, MatPlotLib 2.0.0, PyVISA 1.8
 To get PyVISA: pip install pyvisa
 Download Anaconda: http://continuum.io/downloads
 Anaconda includes NumPy and MatPlotLib
-Download SignalVu-PC programmer manual: http://www.tek.com/node/1828803
-Download RSA5100B programmer manual: 
-http://www.tek.com/spectrum-analyzer/inst5000-manual-7
-Tested on RSA306B, RSA5126B and MSO73304DX with SignalVu
+Tested on MDO4104B-6
 """
 
 import visa
@@ -35,6 +31,7 @@ class MDO:
         self.inst.write('*CLS')
 
     def setup(self, cf, span, trigLevel, vScale, hScale, hPos=10):
+        """Configures scope for simulatenous RF and time domain analysis"""
         self.inst.write('rf:frequency {}'.format(cf))
         self.inst.write('rf:span {}'.format(span))
         self.inst.write('horizontal:scale {}'.format(hScale))
@@ -47,12 +44,13 @@ class MDO:
         self.inst.write('data:source rf_amplitude')
 
     def get_waveform_info(self):
+        """Gather waveform transfer information from scope."""
         self.inst.write('acquire:stopafter sequence')
         self.inst.write('acquire:state on')
         self.inst.query('*OPC?')
-        binaryFormat = self.inst.query('wfmoutpre:bn_fmt?').rstrip()
-        numBytes = self.inst.query('wfmoutpre:byt_nr?').rstrip()
-        byteOrder = self.inst.query('wfmoutpre:byt_or?').rstrip()
+
+        # dType is a single format character from Python's struct module
+        # https://docs.python.org/2/library/struct.html#format-characters
         encoding = self.inst.query('data:encdg?').rstrip()
         if 'RIB' in encoding or 'FAS' in encoding:
             self.dType = 'b'
@@ -86,30 +84,27 @@ class MDO:
         # print(self.inst.query('wfmoutpre?'))
         # self.inst.write('header off')
 
-
     def get_waveform(self):
-        # dType is a single format character from Python's struct module
-        # https://docs.python.org/2/library/struct.html#format-characters
-        self.wfm = self.inst.query_binary_values('curve?', datatype=self.dType, 
+        """Get waveform from scope and scale correctly"""
+        self.wfm = self.inst.query_binary_values('curve?', datatype=self.dType,
             is_big_endian=self.bigEndian, container=np.array)
-        self.wfm = (self.wfm-self.yOff)*self.yMult
-
+        self.wfm = (self.wfm - self.yOff) * self.yMult
 
     def create_mask(self, xMargin, yMargin, pAmp, pWidth, rTime, fTime):
-        # RATHER COMPLICATED MASK CREATION
+        """Creates a waveform mask based on x and y margins"""
         self.upperMask = np.zeros(self.numPoints)
         self.lowerMask = np.zeros(self.numPoints)
-        
-        pWidth = int(pWidth/self.xIncr)
-        rTime = int(rTime/self.xIncr)
-        fTime = int(fTime/self.xIncr)
-        xMargin = int(xMargin/self.xIncr)
+
+        pWidth = int(pWidth / self.xIncr)
+        rTime = int(rTime / self.xIncr)
+        fTime = int(fTime / self.xIncr)
+        xMargin = int(xMargin / self.xIncr)
         hPos = 25
-        trigPoint = int(self.numPoints*hPos/100)
+        trigPoint = int(self.numPoints * hPos / 100)
 
         try:
-            prePulse = int(trigPoint - xMargin - rTime/2)
-            postPulse = int(trigPoint + pWidth + xMargin + rTime/2 + fTime)
+            prePulse = int(trigPoint - xMargin - rTime / 2)
+            postPulse = int(trigPoint + pWidth + xMargin + rTime / 2 + fTime)
             self.upperMask[:prePulse] = yMargin
             if rTime > 0:
                 self.upperMask[prePulse:prePulse + rTime] = np.linspace(
@@ -117,10 +112,9 @@ class MDO:
                 self.upperMask[prePulse + rTime:postPulse] = pAmp + yMargin
             else:
                 self.upperMask[prePulse:postPulse] = pAmp + yMargin
-            
             if fTime > 0:
                 self.upperMask[postPulse - fTime:postPulse] = np.linspace(
-                    pAmp+yMargin, yMargin, fTime)
+                    pAmp + yMargin, yMargin, fTime)
                 self.upperMask[postPulse:] = yMargin
             else:
                 self.upperMask[prePulse + rTime:postPulse] = pAmp + yMargin
@@ -128,19 +122,19 @@ class MDO:
         except ValueError as err:
             print(str(err))
 
-        prePulse = int(trigPoint + xMargin - rTime/2)
-        postPulse = int(trigPoint + pWidth + rTime/2 + fTime - xMargin)
+        prePulse = int(trigPoint + xMargin - rTime / 2)
+        postPulse = int(trigPoint + pWidth + rTime / 2 + fTime - xMargin)
         self.lowerMask[:prePulse] = -yMargin
         if rTime > 0:
             self.lowerMask[prePulse:prePulse + rTime] = np.linspace(
-                -yMargin, pAmp-yMargin, rTime)
+                -yMargin, pAmp - yMargin, rTime)
             self.lowerMask[prePulse + rTime:postPulse] = pAmp - yMargin
         else:
             self.lowerMask[prePulse:postPulse] = pAmp - yMargin
 
         if fTime > 0:
             self.lowerMask[postPulse - fTime:postPulse] = np.linspace(
-                pAmp-yMargin, -yMargin, fTime)
+                pAmp - yMargin, -yMargin, fTime)
             self.lowerMask[postPulse:] = -yMargin
         else:
             self.lowerMask[prePulse + rTime:postPulse] = pAmp - yMargin
@@ -148,17 +142,17 @@ class MDO:
 
         self.trigPoint = trigPoint
 
-
     def test_mask(self):
+        """Tests the waveform against the created mask and tracks failures"""
         self.failIndex = []
         for i in range(len(self.wfm)):
             if (self.upperMask[i] - self.wfm[i] < 0) or (self.wfm[i] - self.lowerMask[i] < 0):
                 self.failIndex.append(i)
 
-
     def plot_masks(self):
-        time = np.linspace(0, self.numPoints*self.xIncr, self.numPoints)
-        fig = plt.figure(1,figsize=(10,5))
+        """Overlays upper and lower masks on RF vs time waveform"""
+        time = np.linspace(0, self.numPoints * self.xIncr, self.numPoints)
+        plt.figure(1, figsize=(10, 5))
         ax1 = plt.subplot(211, facecolor='k')
         ax1.plot(time, self.wfm, color='orange')
         ax1.set_title('RF Amplitude vs Time')
@@ -180,21 +174,21 @@ class MDO:
 
 def main():
     # basic setup
-    cf = 1e9        # Hz
-    span = 100e6    # Hz
-    trigLevel = -20 # dBm
-    vScale = 20e-3  # V
-    hPos = 25       # %
-    hScale = 4e-6   # sec/div
+    cf = 1e9            # Hz
+    span = 100e6        # Hz
+    trigLevel = -20     # dBm
+    vScale = 20e-3      # V
+    hPos = 25           # %
+    hScale = 4e-6       # sec/div
 
     # margins
-    xMargin = 1e-6  # sec
-    yMargin = 20e-3 # V
+    xMargin = 1e-6      # sec
+    yMargin = 20e-3     # V
 
     # ideal pulse mask
-    pAmp = 0.126    # Vrms
-    pWidth = 10e-6   # sec
-    rTime = 1e-6    # sec
+    pAmp = 0.126        # Vrms
+    pWidth = 10e-6      # sec
+    rTime = 1e-6        # sec
     fTime = 1e-6    # sec
 
     mdo = MDO('TCPIP::192.168.1.66::INSTR')
@@ -204,8 +198,9 @@ def main():
     mdo.create_mask(xMargin, yMargin, pAmp, pWidth, rTime, fTime)
     mdo.test_mask()
     mdo.plot_masks()
-    
+
     mdo.inst.close()
+
 
 if __name__ == '__main__':
     main()
