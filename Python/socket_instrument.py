@@ -107,11 +107,9 @@ class SocketInstrument:
         # Convert binary data to NumPy array of specified data type and return.
         return np.frombuffer(rawData, dtype=dtype)
 
-    def get_error(self):
-        """Query the error status register and read all events."""
-        self.query('*esr?')
-        # return self.query('system:error:all?')
-        return self.query('allev?')
+    def binblockwrite(self):
+        """TODO"""
+        print('Not implemented.')
 
 
 def rsa_example(ipAddress):
@@ -128,7 +126,9 @@ def rsa_example(ipAddress):
         inst.write('fetch:spectrum:trace?')
         data = inst.binblockread(dtype=np.float32, debug=True)
 
-    print(inst.get_error())
+    inst.query('*esr?')
+    print(inst.query('system:error:all?'))
+
     inst.disconnect()
     return data
 
@@ -150,7 +150,9 @@ def scope_example(ipAddress):
         inst.write('curve?')
         data = inst.binblockread(dtype=np.uint8, debug=True)
 
-    print(inst.get_error())
+    inst.query('*esr?')
+    print(inst.query('allev?'))
+
     inst.disconnect()
     return data
 
