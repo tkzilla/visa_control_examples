@@ -59,7 +59,7 @@ def get_waveform_info():
 """#################SEARCH/CONNECT#################"""
 # establish communication with dpo
 rm = visa.ResourceManager()
-dpo = rm.open_resource('TCPIP::192.168.1.8::INSTR')
+dpo = rm.open_resource('TCPIP::192.168.1.84::INSTR')
 dpo.timeout = 10000
 dpo.encoding = 'latin_1'
 print(dpo.query('*idn?'))
@@ -72,7 +72,7 @@ hScale = 1e-6
 numFrames = 10
 vScale = 0.5
 vPos = -2.5
-trigLevel = 1
+trigLevel = 0.15
 
 # dpo setup
 dpo.write('acquire:state off')
