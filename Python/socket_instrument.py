@@ -60,12 +60,12 @@ class SocketInstrument:
 
     def write(self, cmd):
         """Write a command string to instrument."""
-        # msg = '{}\n'.format(cmd)
-        # self.socket.send(msg.encode('latin_1'))
-        msg = '{}\n*esr?'.format(cmd)
-        ret = self.query(msg)
-        if (int(ret) != 0):
-            raise SockInstError('esr non-zero: {}'.format(ret))
+        msg = '{}\n'.format(cmd)
+        self.socket.send(msg.encode('latin_1'))
+        # msg = '{}\n*esr?'.format(cmd)
+        # ret = self.query(msg)
+        # if (int(ret) != 0):
+        #     raise SockInstError('esr non-zero: {}'.format(ret))
 
     def binblockread(self, dtype=np.int8, debug=False):
         """Read data with IEEE 488.2 binary block format
@@ -182,7 +182,7 @@ class SocketInstrument:
                 self.binblockwrite(f'wlist:waveform:data "{name}", {offset},', partialData, debug)
 
 
-def awg_example(ipAddress, port):
+def awg_example(ipAddress, port=4000):
     """Tests generic waveform transfer to AWG.
 
     The AWG's native data type is 32 bit floating point.
@@ -223,7 +223,7 @@ def awg_example(ipAddress, port):
     awg.disconnect()
 
 
-def rsa_example(ipAddress):
+def rsa_example(ipAddress, port=4000):
     """Test generic RSA connection, signal capture, and data transfer."""
     rsa = SocketInstrument(host=ipAddress, port=4000, timeout=3)
     print(rsa.instId)
@@ -243,12 +243,15 @@ def rsa_example(ipAddress):
     return data
 
 
-def scope_example(ipAddress):
+def scope_example(ipAddress, port=4000):
     """Test generic scope connection, signal capture, and data transfer."""
     dpo = SocketInstrument(host=ipAddress, port=4000, timeout=3)
     print(dpo.instId)
 
     dpo.write('*rst')
+    dpo.query('*opc?')
+    dpo.write('autoset execute')
+    dpo.query('*opc?')
     dpo.write('acquire:stopafter sequence')
     rl = dpo.query('horizontal:mode:recordlength?')
     dpo.write('data:stop {}'.format(rl))
@@ -268,9 +271,9 @@ def scope_example(ipAddress):
 
 
 def main():
-    awg_example('127.0.0.1', port=4000)
-    # rsa_example('127.0.0.1')
-    # scope_example('192.168.1.84', port=4000)
+    # awg_example('127.0.0.1', port=4000)
+    rsa_example('127.0.0.1')
+    # scope_example('192.168.1.12')
 
 
 if __name__ == '__main__':
