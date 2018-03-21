@@ -5,8 +5,8 @@ Updated: 03/18
 This script allows you to send IQ data to
 the TSG and utulize its internal baseband generator
 to use it as a simple IQ modulator.
-This example creates a 10 kHz dual sideband modulation.
-Windows 10 64-bit, 4.2.15 (AWG only)
+This example creates a dual sideband modulation.
+Windows 10 64-bit, TekVISA 4.2.15
 Python 3.6.4 64-bit
 PyVISA 1.8, NumPy 1.13.1
 """
